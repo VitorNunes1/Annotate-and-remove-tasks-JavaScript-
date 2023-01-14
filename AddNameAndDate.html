@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JavaScriptAula</title>
+  </head>
+
+  <body>
+    <input id="nome-tarefa" type="text">
+    <input id="data" type="date">
+    <button onclick="adicionarTarefa()">Add task</button>
+    <div id="lista-de-tarefas"></div>
+
+    <script>
+      /*let tarefa1 = "Studying math";
+      let tarefa2 = "Ride a bike";
+      let tarefa3 = "Wash the dishes";*/
+      //Seção de dados (Modelos)
+      let afazeres;
+
+      const afazeresSalvo = JSON.parse(localStorage.getItem("afazeres"));
+
+      if( Array.isArray(afazeresSalvo)){
+        afazeres = afazeresSalvo;
+      } else {
+        afazeres = [
+        { nome1:"Studying math", 
+          prazo: "15-06-2022",
+          indice: "1"
+        },
+        { nome1:"Wash the dishes",
+          prazo: "12-06-2022",
+          indice: "2"
+        },
+        {
+          nome1: "Ride a bike",
+          prazo: "13-06-2022",
+          indice: "3"
+        }
+      ];
+      }
+      
+      function criarTarefa(nome1, data)
+    {
+      const tempo = new Date().getTime();
+        //push atualiza afazeres com o conteúdo da caixa de texto
+        //"nome-tarefa"
+        afazeres.push(
+          { nome1: nome1,
+            prazo: data,
+            indice: tempo
+          }
+        );
+    }
+
+    function removerTarefa( indice ){
+      afazeres = afazeres.filter(function (afazer){
+      if ( afazer.indice == indice )
+      {
+        return false;
+      } else {
+        return true;
+      }
+    }
+      );
+      salvarTarefas();
+    }
+
+    let salvarTarefas = () => localStorage.setItem("afazeres", JSON.stringify(afazeres));
+    
+
+      //forEach percorre o vetor afazeres
+      //e executa a função anônima tendo como argumento
+      //cada um dos elementos do vetor
+      function renderizar(){ 
+        document.getElementById("lista-de-tarefas").innerHTML = "";
+        afazeres.forEach(function (afazer)
+        {
+        //Cria um elemento DIV que insere o conteúdo de
+        //afazer em seu innerHTML
+        let elemento = document.createElement("div");
+        elemento.innerHTML = afazer.nome1 + " " + afazer.prazo;
+        elemento.style = "border-bottom: 1px; border-bottom-style: solid; border-bottom-color: grey; background-color: lightblue;";
+
+        const botaoApagar = document.createElement("button");
+          botaoApagar.innerText = "Apagar";
+          botaoApagar.style = "margin-left: 15px";
+          botaoApagar.id = afazer.indice;
+          botaoApagar.onclick = apagarTarefa;
+
+          elemento.appendChild(botaoApagar);
+
+
+        //Procura uma DIV identificada por "lista-de-tarefas"
+        let listaTarefas = document.getElementById("lista-de-tarefas")
+        //Insere os elementos criados (div) em "lista-de-tarefas"
+        listaTarefas.appendChild(elemento);
+        }
+        );
+      }
+       renderizar();
+
+      function adicionarTarefa(){
+
+        let caixaDeTexto = document.getElementById("nome-tarefa");
+        let nome = caixaDeTexto.value;
+
+        let caixaDeData = document.getElementById("data");
+        let dataTarefa = caixaDeData.value;
+        //Gera um valor em milissegundos relativo à data atual
+        //Armazena na variável tempo
+        
+        criarTarefa( nome, dataTarefa);
+        
+        //Esta linha apaga o conteúdo da DIV "lista-de-tarefas"
+        
+
+        renderizar()
+        /*afazeres.forEach(function (afazer)
+        {
+        let elemento = document.createElement("div");
+        elemento.innerHTML = afazer;
+        let listaTarefas = document.getElementById("lista-de-tarefas");
+        listaTarefas.appendChild(elemento);
+        }
+      );*/
+      salvarTarefas();
+    }
+
+   function apagarTarefa( evento )
+    {
+      const botaoApagar = evento.target;
+      const indiceParaApagar = botaoApagar.id;
+
+      removerTarefa( indiceParaApagar )
+
+      renderizar();
+    }
+
+    //Seção de controle
+    function criarTarefa(nome1, data)
+    {
+      const tempo = new Date().getTime();
+        //push atualiza afazeres com o conteúdo da caixa de texto
+        //"nome-tarefa"
+        afazeres.push(
+          { nome1: nome1,
+            prazo: data,
+            indice: tempo
+          }
+        );
+    }
+    </script>
+  </body>
+</html>
